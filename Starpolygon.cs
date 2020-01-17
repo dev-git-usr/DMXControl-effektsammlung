@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
+//Todo:
+// Q=7 P=12 outlined - Effektvisualizer stürzt ab
 namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
 {
     public class Starpolygon : Abstract2DFrequentFunctionEffect
@@ -90,6 +92,29 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                 this.calc_Points();
             }
         }
+
+        public int berechneGgt(int _zahl1, int _zahl2)
+        {
+            int zahl1 = _zahl1;
+            int zahl2 = _zahl2;
+            //Diese Variable wird bei Wertzuweisungen zwischen den Zahlen benutzt
+            int temp = 0;
+            //Der Rückgabewert zweier gegebener Zahlen.
+            int ggt = 0;//Solange der Modulo der zwei zahlen nicht 0 ist,
+                        //werden Zuweisungen entsprechend demEuklidischen Algorithmus ausgeführt.
+            while (zahl1 % zahl2 != 0)
+            {
+                temp = zahl1 % zahl2;
+                zahl1 = zahl2;
+                zahl2 = temp;
+            }
+
+            ggt = zahl2;
+
+            return ggt;
+
+        }
+
         private void calc_Points()
         {
             if (this.initializing == false)
@@ -113,7 +138,20 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                 PointF[] innerpointlist = new PointF[p];
                 angle = (float)Math.PI/(float)p;
                 //Spitzenwinkel = 180°-(q*360*)/p
-                float spitzenwinkel = (float)Math.PI - (float)((float)2 * Math.PI * q) / (float)p;
+                float mindst;
+                if (p-q > q)
+                {
+                    mindst = q%p;
+                } else
+                {
+                    mindst = Math.Abs(p-q)%p;
+                }
+                //mindst = q;
+                float spitzenwinkel = ((float)Math.PI - (float)((float)2 * Math.PI * (mindst)) / (float)p);
+                /*if (spitzenwinkel > (float)Math.PI / 2)
+                {
+                    spitzenwinkel = (float)Math.PI - spitzenwinkel;
+                }*/
                 //innenradius = außenradius *(1-cos(0,5*spitzenwinkel)
                 float innerradius = 1.0f * (float)Math.Sin((float)0.5 * spitzenwinkel)/(float)Math.Sin(Math.PI-(float)0.5*spitzenwinkel-(Math.PI*(float)2)/((float)2*p));
                 for (int index = 0; index < p; index = index + 1)
@@ -134,7 +172,9 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                     //Punkteliste für durch die Mitte
                     this.Pointlist = new PointF[0];
                     int id = 0;
-                    if (p%q != 0) //zusammenhaengende Sterne
+                    int ggt = (berechneGgt(p, q));
+                    //if (p%q != 0) //zusammenhaengende Sterne
+                    if (ggt == 1) //zusammenhaengende Sterne
                     {
                         for (int index = 0; index < p; index = index + 1)
                         {
@@ -145,8 +185,27 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                     }
                     else
                     {
-                        int counter = (int)(p/q);
-                        for (int index = 0; index < (p/q + 1)*p; index = index + 1)
+                        //int counter = (int)(p/q);
+                        int counter = 0;
+                        int targetcounter = p / ggt;
+                        for (int index = 0; index < (p/ggt + 1) * p; index = index + 1)
+                        {
+                            appendPosition(outerpointlist[id]);
+                            if (counter == targetcounter)
+                            {
+                                // Beginnen der nächsten Form
+                                appendPosition(innerpointlist[id]);
+                                id = (id + 1) % p;
+                                counter = 0;
+                            } else
+                            {
+                                counter++;
+                                id = (id + q) % p;
+                            }
+                        }
+                        /*
+                        //for (int index = 0; index < (p/q + 1)*p; index = index + 1)
+                        for (int index = 0; index < (p/ggt + 1) * p; index = index + 1)
                         //for (int index = 0; index < (p*q)*p; index = index + 1)
                         {
                             appendPosition(outerpointlist[id]);
@@ -154,7 +213,9 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                                 // Beginnen der nächsten Form
                                 appendPosition(innerpointlist[id]);
                                 id = (id + 1) % p;
-                                counter = counter + (int)(p / q) + 1;
+                                //counter = counter + (int)(p / q) + 1;
+                                counter = counter + ggt + 1;
+
                             }
                             else
                             {
@@ -162,6 +223,7 @@ namespace org.dmxc.lumos.Kernel.PropertyValue.Effect
                                 id = (id + q) % p;
                             }                
                         }
+                        */
                     }
                 }
                 calcdistances();

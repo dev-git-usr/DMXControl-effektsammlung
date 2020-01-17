@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\..\Program Files %28x86%29\DMXControl3_RC4\Kernel\Plugins\</OutputPath>
+    <OutputPath>C:\Program Files %28x86%29\DMXControl3\Kernel\Plugins\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,10 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Lumos">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\DMXControl3\Kernel\Lumos.exe</HintPath>
+      <HintPath>C:\Program Files (x86)\DMXControl3\Kernel\Lumos.exe</HintPath>
     </Reference>
     <Reference Include="LumosLIB">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\DMXControl3\Kernel\LumosLIB.dll</HintPath>
+      <HintPath>C:\Program Files (x86)\DMXControl3\Kernel\LumosLIB.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
